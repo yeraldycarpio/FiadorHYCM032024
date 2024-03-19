@@ -131,18 +131,26 @@ namespace FiadorHYCM032024.Controllers
 
             try
                 {
-                    var facturaUpdate = await _context.Fiadors
-                      .Include(s => s.ReferenciasFamiliare)
-                      .FirstAsync(s => s.Id == fiador.Id);
-                    facturaUpdate.Nombre = fiador.Nombre;
-                    facturaUpdate.Direccion = fiador.Direccion;
-                    facturaUpdate.Telefono = fiador.Telefono;
-                    facturaUpdate.Correo = fiador.Correo;
-                    facturaUpdate.Ocupacion = fiador.Ocupacion;
-                    facturaUpdate.IngresoMensual = fiador.IngresoMensual;
-                    facturaUpdate.FechaNacimiento = fiador.FechaNacimiento;
-                    // Obtener todos los detalles que seran nuevos y agregarlos a la base de datos
-                    var detNew = fiador.ReferenciasFamiliare.Where(s => s.Id > 0);
+                var facturaUpdate = await _context.Fiadors
+                        .Include(s => s.ReferenciasFamiliare)
+                        .FirstAsync(s => s.Id == fiador.Id);
+                facturaUpdate.Nombre = fiador.Nombre;
+                facturaUpdate.Direccion = fiador.Direccion;
+                facturaUpdate.Telefono = fiador.Telefono;
+                var detNew = fiador.ReferenciasFamiliare.Where(s => s.Id == 0);
+
+                //var facturaUpdate = await _context.Fiadors
+                //  .Include(s => s.ReferenciasFamiliare)
+                //  .FirstAsync(s => s.Id == fiador.Id);
+                //facturaUpdate.Nombre = fiador.Nombre;
+                //facturaUpdate.Direccion = fiador.Direccion;
+                //facturaUpdate.Telefono = fiador.Telefono;
+                //facturaUpdate.Correo = fiador.Correo;
+                //facturaUpdate.Ocupacion = fiador.Ocupacion;
+                //facturaUpdate.IngresoMensual = fiador.IngresoMensual;
+                //facturaUpdate.FechaNacimiento = fiador.FechaNacimiento;
+                // Obtener todos los detalles que seran nuevos y agregarlos a la base de datos
+                
                     foreach (var d in detNew)
                     {
                         facturaUpdate.ReferenciasFamiliare.Add(d);
