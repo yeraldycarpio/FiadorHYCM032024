@@ -112,6 +112,7 @@ namespace FiadorHYCM032024.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Accion = "Edit";
             return View(fiador);
         }
 
@@ -131,7 +132,46 @@ namespace FiadorHYCM032024.Controllers
             {
                 try
                 {
-                    _context.Update(fiador);
+                    var facturaUpdate = await _context.Fiadors
+                      .Include(s => s.ReferenciasFamiliare)
+                      .FirstAsync(s => s.Id == fiador.Id);
+                    facturaUpdate.Nombre = fiador.Nombre;
+                    facturaUpdate.Direccion = fiador.Direccion;
+                    facturaUpdate.Telefono = fiador.Telefono;
+                    facturaUpdate.Correo = fiador.Correo;
+                    facturaUpdate.Ocupacion = fiador.Ocupacion;
+                    facturaUpdate.IngresoMensual = fiador.IngresoMensual;
+                    facturaUpdate.FechaNacimiento = fiador.FechaNacimiento;
+                    // Obtener todos los detalles que seran nuevos y agregarlos a la base de datos
+                    var detNew = fiador.ReferenciasFamiliare.Where(s => s.Id > 0);
+                    foreach (var d in detNew)
+                    {
+                        facturaUpdate.ReferenciasFamiliare.Add(d);
+                    }
+                    // Obtener todos los detalles que seran modificados y actualizar a la base de datos
+                    var detUpdate = fiador.ReferenciasFamiliare.Where(s => s.Id > 0);
+                    foreach (var d in detUpdate)
+                    {
+                        var det = facturaUpdate.ReferenciasFamiliare.FirstOrDefault(s => s.Id == d.Id);
+                        det.Nombre = d.Nombre;
+                        det.Relacion = d.Relacion;
+                        det.Telefono = d.Telefono;
+                        det.Direccion = d.Direccion;
+                    }
+                    // Obtener todos los detalles que seran eliminados y actualizar a la base de datos
+                    var delDet = fiador.ReferenciasFamiliare.Where(s => s.Id < 0).ToList();
+                    if (delDet != null && delDet.Count > 0)
+                    {
+                        foreach (var d in delDet)
+                        {
+                            d.Id = d.Id * -1;
+                            var det = facturaUpdate.ReferenciasFamiliare.FirstOrDefault(s => s.Id == d.Id);
+                            _context.Remove(det);
+                            // facturaUpdate.DetFacturaVenta.Remove(det);
+                        }
+                    }
+                    // Aplicar esos cambios a la base de datos
+                    _context.Update(facturaUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
