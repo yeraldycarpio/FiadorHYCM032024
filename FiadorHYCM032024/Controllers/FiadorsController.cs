@@ -105,7 +105,9 @@ namespace FiadorHYCM032024.Controllers
                 return NotFound();
             }
 
-            var fiador = await _context.Fiadors.FindAsync(id);
+            var fiador = await _context.Fiadors
+                .Include(s=> s.ReferenciasFamiliare)
+                .FirstAsync(s=> s.Id==id);
             if (fiador == null)
             {
                 return NotFound();
@@ -118,7 +120,7 @@ namespace FiadorHYCM032024.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Correo,Ocupacion,IngresoMensual,FechaNacimiento")] Fiador fiador)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Correo,Ocupacion,IngresoMensual,FechaNacimiento,ReferenciasFamiliare")] Fiador fiador)
         {
             if (id != fiador.Id)
             {
