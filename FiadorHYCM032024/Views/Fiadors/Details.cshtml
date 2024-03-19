@@ -4,10 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h3 class="text-success">Detalles del registro</h3>
 
 <div>
-    <h4>Fiador</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -54,7 +53,10 @@
         </dd>
     </dl>
 </div>
+<div class="row row-cols-md-12">
+    @await Html.PartialAsync("_DetReferenciasFamiliares", Model.ReferenciasFamiliare)
+</div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
 </div>

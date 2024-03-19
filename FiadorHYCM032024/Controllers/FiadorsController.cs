@@ -35,13 +35,14 @@ namespace FiadorHYCM032024.Controllers
             }
 
             var fiador = await _context.Fiadors
+                .Include(s=> s.ReferenciasFamiliare)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (fiador == null)
             {
                 return NotFound();
             }
-
+            ViewBag.Accion = "Details";
             return View(fiador);
         }
 
@@ -128,9 +129,7 @@ namespace FiadorHYCM032024.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
+            try
                 {
                     var facturaUpdate = await _context.Fiadors
                       .Include(s => s.ReferenciasFamiliare)
@@ -186,8 +185,6 @@ namespace FiadorHYCM032024.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(fiador);
         }
 
         // GET: Fiadors/Delete/5
@@ -199,12 +196,13 @@ namespace FiadorHYCM032024.Controllers
             }
 
             var fiador = await _context.Fiadors
+                .Include(s=> s.ReferenciasFamiliare)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (fiador == null)
             {
                 return NotFound();
             }
-
+            ViewBag.Accion = "Delete";
             return View(fiador);
         }
 
